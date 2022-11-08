@@ -4,12 +4,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.ScrollView
 import android.widget.TextView
 
 class QuizQuestionsActivity : AppCompatActivity() {
 
+    private lateinit var questionScrollView: ScrollView
     private lateinit var questionTextView: TextView
     private lateinit var questionImageView: ImageView
     private lateinit var optionOneTextView: TextView
@@ -39,6 +42,8 @@ class QuizQuestionsActivity : AppCompatActivity() {
 
         submitButton = findViewById(R.id.submitButton)
 
+        questionScrollView = findViewById(R.id.questionScrollView)
+
         quizProgressBar.max = questions.size
         Log.i("questions.size", "${questions.size}")
 
@@ -46,11 +51,11 @@ class QuizQuestionsActivity : AppCompatActivity() {
             submit()
         }
 
-        setQuestion()
+        setQuestion(0)
     }
 
-    private fun setQuestion() {
-        val question = questions[currentQuestion - 1]
+    private fun setQuestion(index: Int) {
+        val question = questions[index]
 
         questionTextView.text = question.question
         questionImageView.setImageResource(question.image)
@@ -59,16 +64,15 @@ class QuizQuestionsActivity : AppCompatActivity() {
         optionThreeTextView.text = question.optionThree
         optionFourTextView.text = question.optionFour
 
-        quizProgressBar.progress = currentQuestion
-        val progress = "$currentQuestion of ${quizProgressBar.max}"
+        quizProgressBar.progress = index + 1
+        val progress = "${index + 1} of ${quizProgressBar.max}"
         quizProgressTextView.text = progress
-
-        submitButton.isEnabled = currentQuestion < quizProgressBar.max
     }
 
     private fun submit() {
+        setQuestion(currentQuestion)
         currentQuestion++
-
-        setQuestion()
+        submitButton.isEnabled = currentQuestion < quizProgressBar.max
+        questionScrollView.smoothScrollTo(0, 0)
     }
 }
