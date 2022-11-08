@@ -41,9 +41,9 @@
                 android:minHeight="50dp"
                 android:max="9"
                 android:progress="0"
-                tools:progress="4"
                 android:indeterminate="false"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                tools:progress="1" />
             <TextView
                 android:id="@+id/quizProgressTextView"
                 android:layout_width="wrap_content"
@@ -51,10 +51,10 @@
                 android:gravity="center"
                 android:padding="16dp"
                 android:textSize="14sp"
-                tools:text="0 / 9" />
+                tools:text="1 / 9" />
         </LinearLayout>
         <TextView
-            android:id="@+id/answerOneTextView"
+            android:id="@+id/optionOneTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -62,18 +62,9 @@
             android:background="@drawable/default_option_border_bg"
             android:textColor="@color/title"
             android:gravity="center"
-            tools:text="Answer 1" />
+            tools:text="Option 1" />
         <TextView
-            android:id="@+id/answerTwoTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:padding="16dp"
-            android:background="@drawable/default_option_border_bg"
-            android:gravity="center"
-            tools:text="Answer 2" />
-        <TextView
-            android:id="@+id/answerThreeTextView"
+            android:id="@+id/optionTwoTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -81,9 +72,9 @@
             android:background="@drawable/default_option_border_bg"
             android:textColor="@color/title"
             android:gravity="center"
-            tools:text="Answer 3" />
+            tools:text="Option 2" />
         <TextView
-            android:id="@+id/answerFourTextView"
+            android:id="@+id/optionThreeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -91,7 +82,17 @@
             android:background="@drawable/default_option_border_bg"
             android:textColor="@color/title"
             android:gravity="center"
-            tools:text="Answer 4" />
+            tools:text="Option 3" />
+        <TextView
+            android:id="@+id/optionFourTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="16dp"
+            android:background="@drawable/default_option_border_bg"
+            android:textColor="@color/title"
+            android:gravity="center"
+            tools:text="Option 4" />
         <Button
             android:id="@+id/submitButton"
             android:layout_width="match_parent"
