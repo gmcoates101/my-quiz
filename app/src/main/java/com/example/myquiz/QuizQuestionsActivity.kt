@@ -9,9 +9,7 @@ class QuizQuestionsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
 
-        var questions = Constants.getQuestions()
-        Log.i("Number of questions", "${questions.size}")
-
-
+        val questions = Constants.getQuestions()
+        Log.i("questions.size", "${questions.size}")
     }
 }

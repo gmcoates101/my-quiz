@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="title">#363A43</color>
     <color name="subtitle">#7A8089</color>
+    <color name="answer_border">#E8E8E8</color>
 </resources>
