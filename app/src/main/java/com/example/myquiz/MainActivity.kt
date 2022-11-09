@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity() {
             if(nameEditText.text.isEmpty()) {
                 Toast.makeText(this, "You need to enter your name", Toast.LENGTH_LONG).show()
             } else {
-                val intent = Intent(this, QuizQuestionsActivity::class.java)
-                startActivity(intent)
+                startActivity(Intent(this, QuizQuestionsActivity::class.java))
                 finish()
             }
         }

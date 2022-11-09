@@ -1,16 +1,21 @@
 package com.example.myquiz
 
+import android.graphics.Color
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.View.OnClickListener
 import android.widget.Button
-import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 
-class QuizQuestionsActivity : AppCompatActivity() {
+class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var questionScrollView: ScrollView
     private lateinit var questionTextView: TextView
@@ -23,35 +28,47 @@ class QuizQuestionsActivity : AppCompatActivity() {
     private lateinit var quizProgressTextView: TextView
     private lateinit var submitButton: Button
 
+    private val options = ArrayList<TextView>()
     private var currentQuestion = 1
     private val questions: ArrayList<Question> = Constants.getQuestions()
+    private var selectedOption = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz_questions)
 
+        controlSetup()
+
+        submitButton.setOnClickListener {
+            submit()
+        }
+
+        quizProgressBar.max = questions.size
+        setQuestion(0)
+    }
+
+    private fun controlSetup() {
         questionTextView = findViewById(R.id.questionTextView)
         questionImageView = findViewById(R.id.questionImageView)
         optionOneTextView = findViewById(R.id.optionOneTextView)
         optionTwoTextView = findViewById(R.id.optionTwoTextView)
         optionThreeTextView = findViewById(R.id.optionThreeTextView)
         optionFourTextView = findViewById(R.id.optionFourTextView)
-
         quizProgressBar = findViewById(R.id.quizProgressBar)
         quizProgressTextView = findViewById(R.id.quizProgressTextView)
-
         submitButton = findViewById(R.id.submitButton)
-
         questionScrollView = findViewById(R.id.questionScrollView)
 
-        quizProgressBar.max = questions.size
-        Log.i("questions.size", "${questions.size}")
+        options.add(0, optionOneTextView)
+        options.add(0, optionTwoTextView)
+        options.add(0, optionThreeTextView)
+        options.add(0, optionFourTextView)
 
-        submitButton.setOnClickListener {
-            submit()
-        }
-
-        setQuestion(0)
+        optionOneTextView.setOnClickListener(this)
+        optionTwoTextView.setOnClickListener(this)
+        optionThreeTextView.setOnClickListener(this)
+        optionFourTextView.setOnClickListener(this)
+        submitButton.setOnClickListener(this)
     }
 
     private fun setQuestion(index: Int) {
@@ -64,15 +81,56 @@ class QuizQuestionsActivity : AppCompatActivity() {
         optionThreeTextView.text = question.optionThree
         optionFourTextView.text = question.optionFour
 
-        quizProgressBar.progress = index + 1
-        val progress = "${index + 1} of ${quizProgressBar.max}"
-        quizProgressTextView.text = progress
+        val progress = index + 1
+        val progressString = "$progress of ${quizProgressBar.max}"
+
+        quizProgressBar.progress = progress
+        quizProgressTextView.text = progressString
+
+        if (progress == quizProgressBar.max) {
+            submitButton.text = getString(R.string.quiz_complete)
+        }
+    }
+
+    private fun selectedOptionView(selectedTextView: TextView, selectedId: Int) {
+        defaultOptionsView()
+
+        selectedTextView.background = ContextCompat.getDrawable(this, R.drawable.selected_option_border_bg)
+        selectedTextView.setTypeface(selectedTextView.typeface, Typeface.BOLD)
+
+        selectedOption = selectedId
+    }
+
+    private fun defaultOptionsView() {
+        for (option in options) {
+            option.setTextColor(Color.parseColor("#7A8089"))
+            option.typeface = Typeface.DEFAULT
+            option.background = ContextCompat.getDrawable(this, R.drawable.default_option_border_bg)
+        }
+    }
+
+    override fun onClick(view: View?) {
+
+        when(view?.id) {
+            R.id.optionOneTextView -> selectedOptionView((view as TextView), 1)
+            R.id.optionTwoTextView -> selectedOptionView((view as TextView), 2)
+            R.id.optionThreeTextView -> selectedOptionView((view as TextView), 3)
+            R.id.optionFourTextView -> selectedOptionView((view as TextView), 4)
+            R.id.submitButton -> submit()
+        }
     }
 
     private fun submit() {
-        setQuestion(currentQuestion)
-        currentQuestion++
-        submitButton.isEnabled = currentQuestion < quizProgressBar.max
-        questionScrollView.smoothScrollTo(0, 0)
+        val question = questions[currentQuestion - 1]
+
+        if (question.correctAnswer == selectedOption) {
+            Toast.makeText(this, "Correct", Toast.LENGTH_LONG).show()
+        }
+
+//        if (currentQuestion < quizProgressBar.max) {
+//            setQuestion(currentQuestion)
+//            currentQuestion++
+//            questionScrollView.smoothScrollTo(0, 0)
+//        }
     }
 }
