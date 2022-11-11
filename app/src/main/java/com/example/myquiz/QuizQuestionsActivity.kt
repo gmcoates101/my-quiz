@@ -32,6 +32,9 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
     private var currentQuestion = 1
     private val questions: ArrayList<Question> = Constants.getQuestions()
     private var selectedOption = 0
+    private var submitted = false
+    private var done = false
+    private var score = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,18 +63,32 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
         questionScrollView = findViewById(R.id.questionScrollView)
 
         options.add(0, optionOneTextView)
-        options.add(0, optionTwoTextView)
-        options.add(0, optionThreeTextView)
-        options.add(0, optionFourTextView)
+        options.add(1, optionTwoTextView)
+        options.add(2, optionThreeTextView)
+        options.add(3, optionFourTextView)
 
+        optionSetClickListener()
+
+        submitButton.setOnClickListener(this)
+    }
+
+    private fun optionSetClickListener() {
         optionOneTextView.setOnClickListener(this)
         optionTwoTextView.setOnClickListener(this)
         optionThreeTextView.setOnClickListener(this)
         optionFourTextView.setOnClickListener(this)
-        submitButton.setOnClickListener(this)
+    }
+
+    private fun optionRemoveClickListener() {
+        optionOneTextView.setOnClickListener(null)
+        optionTwoTextView.setOnClickListener(null)
+        optionThreeTextView.setOnClickListener(null)
+        optionFourTextView.setOnClickListener(null)
     }
 
     private fun setQuestion(index: Int) {
+        defaultOptionsView()
+
         val question = questions[index]
 
         questionTextView.text = question.question
@@ -87,9 +104,7 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
         quizProgressBar.progress = progress
         quizProgressTextView.text = progressString
 
-        if (progress == quizProgressBar.max) {
-            submitButton.text = getString(R.string.quiz_complete)
-        }
+        questionScrollView.smoothScrollTo(0, 0)
     }
 
     private fun selectedOptionView(selectedTextView: TextView, selectedId: Int) {
@@ -121,16 +136,46 @@ class QuizQuestionsActivity : AppCompatActivity(), OnClickListener {
     }
 
     private fun submit() {
-        val question = questions[currentQuestion - 1]
 
-        if (question.correctAnswer == selectedOption) {
-            Toast.makeText(this, "Correct", Toast.LENGTH_LONG).show()
+        if (!done) {
+            if (!submitted) {
+                val question = questions[currentQuestion - 1]
+
+                options[question.correctAnswer - 1].background = ContextCompat.getDrawable(this, R.drawable.correct_option_border_bg)
+                options[question.correctAnswer - 1].setTextColor(Color.parseColor("#FFFFFF"))
+
+                if (question.correctAnswer != selectedOption) {
+                    options[selectedOption - 1].background = ContextCompat.getDrawable(this, R.drawable.incorrect_option_boder_bg)
+                    options[selectedOption - 1].setTextColor(Color.parseColor("#FFFFFF"))
+                }
+
+                if (question.correctAnswer == selectedOption) {
+                    score++
+                }
+
+                submitButton.text = "GO TO NEXT QUESTION"
+                submitted = true
+                optionRemoveClickListener()
+                isDone()
+            } else {
+                if (currentQuestion < quizProgressBar.max) {
+                    setQuestion(currentQuestion)
+
+                    submitButton.text = "Submit"
+                }
+                optionSetClickListener()
+                currentQuestion++
+                submitted = false
+            }
+        } else {
+            Toast.makeText(this, "You scored $score out of ${quizProgressBar.max}", Toast.LENGTH_LONG).show()
         }
+    }
 
-//        if (currentQuestion < quizProgressBar.max) {
-//            setQuestion(currentQuestion)
-//            currentQuestion++
-//            questionScrollView.smoothScrollTo(0, 0)
-//        }
+    private fun isDone() {
+        if (currentQuestion == quizProgressBar.max) {
+            submitButton.text = "Finish"
+            done = true
+        }
     }
 }
